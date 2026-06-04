@@ -14,13 +14,26 @@ export default function GroepLogin() {
     e.preventDefault()
     setFout('')
     setLaden(true)
+
     const { data, error } = await supabase
-      .from('groepen').select('*').eq('pincode', pincode.trim()).single()
+      .from('groepen')
+      .select('*, rondes(*)')
+      .eq('pincode', pincode.trim())
+      .single()
+
     setLaden(false)
+
     if (error || !data) {
       setFout('Pincode niet gevonden. Vraag je leraar om de juiste code.')
       return
     }
+
+    // Check of ronde open is
+    if (!data.rondes?.open) {
+      setFout('Deze ronde is afgesloten. Je kunt niet meer bestellen. Vraag je docent om hulp.')
+      return
+    }
+
     sessionStorage.setItem('groep', JSON.stringify(data))
     router.push('/bestellen')
   }
@@ -56,10 +69,7 @@ export default function GroepLogin() {
             </button>
           </form>
         </div>
-
-        <p style={{ textAlign: 'center', color: 'var(--subtekst)', fontSize: 12, marginTop: 20 }}>
-          Heb je geen pincode? Vraag die aan je KWT-docent.
-        </p>
+        <p style={{ textAlign: 'center', color: 'var(--subtekst)', fontSize: 12, marginTop: 20 }}>Heb je geen pincode? Vraag die aan je KWT-docent.</p>
       </div>
     </main>
   )
