@@ -13,9 +13,11 @@ export default function Home() {
       </div>
 
       {/* Header met logo */}
-      <header style={{ position: 'relative', zIndex: 1, padding: '24px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Image src="/yuverta-logo.png" alt="Yuverta" width={160} height={47} style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }} />
-        <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, fontFamily: 'Nunito', fontWeight: 600 }}>Boskoop</span>
+      <header style={{ position: 'relative', zIndex: 1, padding: '16px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ background: 'white', borderRadius: 10, padding: '8px 16px', boxShadow: '0 2px 12px rgba(0,0,0,0.15)' }}>
+          <Image src="/yuverta-logo.png" alt="Yuverta" width={140} height={41} style={{ display: 'block' }} />
+        </div>
+        <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, fontFamily: 'Nunito', fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '6px 14px', borderRadius: 99 }}>Boskoop</span>
       </header>
 
       {/* Content */}
