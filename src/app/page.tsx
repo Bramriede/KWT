@@ -49,31 +49,21 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Inlog knoppen */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', maxWidth: 500, margin: '32px auto 0', padding: '0 24px' }}>
+      {/* Inlog knoppen als afbeeldingen */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', maxWidth: 600, margin: '32px auto 0', padding: '0 24px' }}>
         <Link href="/groep" style={{ textDecoration: 'none' }}>
-          <div style={{ background: 'white', borderRadius: 16, padding: '18px 24px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 16, transition: 'transform 0.15s, box-shadow 0.15s', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.35)' }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.3)' }}>
-            <div style={{ width: 48, height: 48, borderRadius: 14, background: 'linear-gradient(135deg, #1B1F6B, #2a3094)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>🎒</div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 900, fontSize: 17, color: '#1B1F6B' }}>Ik ben leerling</div>
-              <div style={{ fontSize: 13, color: '#5a5a7a', marginTop: 2 }}>Inloggen met groepspincode</div>
-            </div>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: '#96D400', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 900, color: '#1B1F6B' }}>→</div>
+          <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', height: 110, cursor: 'pointer', boxShadow: '0 6px 28px rgba(0,0,0,0.4)', transition: 'transform 0.15s, box-shadow 0.15s' }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 36px rgba(0,0,0,0.5)' }}
+            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 6px 28px rgba(0,0,0,0.4)' }}>
+            <Image src="/knop-leerling.png" alt="Ik ben leerling" fill style={{ objectFit: 'cover', objectPosition: 'center top' }} />
           </div>
         </Link>
 
         <Link href="/admin" style={{ textDecoration: 'none' }}>
-          <div style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(12px)', border: '1.5px solid rgba(150,212,0,0.3)', borderRadius: 16, padding: '18px 24px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 16, transition: 'transform 0.15s, background 0.15s' }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = 'rgba(255,255,255,0.11)' }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.background = 'rgba(255,255,255,0.07)' }}>
-            <div style={{ width: 48, height: 48, borderRadius: 14, background: 'rgba(150,212,0,0.15)', border: '1px solid rgba(150,212,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>🔑</div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 900, fontSize: 17, color: '#96D400' }}>Beheer / Docent / Erik</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', marginTop: 2 }}>Materialen, rondes, groepen, overzicht</div>
-            </div>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(150,212,0,0.15)', border: '1px solid rgba(150,212,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, color: '#96D400' }}>→</div>
+          <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', height: 110, cursor: 'pointer', boxShadow: '0 6px 28px rgba(0,0,0,0.4)', transition: 'transform 0.15s, box-shadow 0.15s' }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 36px rgba(0,0,0,0.5)' }}
+            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 6px 28px rgba(0,0,0,0.4)' }}>
+            <Image src="/knop-beheer.png" alt="Beheer / Docent / Erik" fill style={{ objectFit: 'cover', objectPosition: 'center top' }} />
           </div>
         </Link>
       </div>
