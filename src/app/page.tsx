@@ -15,8 +15,8 @@ export default function Home() {
 
       {/* Header */}
       <header style={{ padding: '20px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 10, position: 'relative' }}>
-        <div style={{ background: 'white', borderRadius: 10, padding: '8px 16px' }}>
-          <Image src="/yuverta-logo.png" alt="Yuverta" width={130} height={38} style={{ display: 'block', filter: 'brightness(0) invert(1)' }} />
+        <div style={{ background: 'white', borderRadius: 10, padding: '8px 16px', boxShadow: '0 2px 12px rgba(0,0,0,0.3)' }}>
+          <Image src="/yuverta-logo.png" alt="Yuverta" width={130} height={38} style={{ display: 'block' }} />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, fontFamily: 'Nunito', fontWeight: 700 }}>Keuze Werktijd — Boskoop</span>
@@ -43,11 +43,6 @@ export default function Home() {
             </div>
             {/* Gradient overlay */}
             <div className="overlay" style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${w.kleur}cc 0%, ${w.kleur}55 100%)`, opacity: 0.65, transition: 'opacity 0.3s' }} />
-            {/* Tekst */}
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px 22px' }}>
-              <div style={{ fontFamily: 'Nunito', fontWeight: 900, fontSize: 20, color: 'white', marginBottom: 4, textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>{w.naam}</div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>{w.beschrijving}</div>
-            </div>
             {/* Decoratief accent */}
             <div style={{ position: 'absolute', top: 16, right: 16, width: 8, height: 8, borderRadius: '50%', background: '#96D400', boxShadow: '0 0 12px #96D400' }} />
           </div>
