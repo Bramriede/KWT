@@ -43,27 +43,25 @@ export default function Home() {
             </div>
             {/* Gradient overlay */}
             <div className="overlay" style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, ${w.kleur}cc 0%, ${w.kleur}55 100%)`, opacity: 0.65, transition: 'opacity 0.3s' }} />
-            {/* Decoratief accent */}
-            <div style={{ position: 'absolute', top: 16, right: 16, width: 8, height: 8, borderRadius: '50%', background: '#96D400', boxShadow: '0 0 12px #96D400' }} />
+
           </div>
         ))}
       </div>
 
-      {/* Inlog knoppen als afbeeldingen */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', maxWidth: 600, margin: '32px auto 0', padding: '0 24px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', maxWidth: 600, margin: '32px auto 0', padding: '0 24px 40px' }}>
         <Link href="/groep" style={{ textDecoration: 'none' }}>
-          <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', height: 110, cursor: 'pointer', boxShadow: '0 6px 28px rgba(0,0,0,0.4)', transition: 'transform 0.15s, box-shadow 0.15s' }}
+          <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', height: 120, cursor: 'pointer', boxShadow: '0 6px 28px rgba(0,0,0,0.4)', transition: 'transform 0.15s, box-shadow 0.15s' }}
             onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 36px rgba(0,0,0,0.5)' }}
             onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 6px 28px rgba(0,0,0,0.4)' }}>
-            <Image src="/knop-leerling.png" alt="Ik ben leerling" fill style={{ objectFit: 'cover', objectPosition: 'center top' }} />
+            <Image src="/knop-leerling.png" alt="Ik ben leerling" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
           </div>
         </Link>
 
         <Link href="/admin" style={{ textDecoration: 'none' }}>
-          <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', height: 110, cursor: 'pointer', boxShadow: '0 6px 28px rgba(0,0,0,0.4)', transition: 'transform 0.15s, box-shadow 0.15s' }}
+          <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', height: 120, cursor: 'pointer', boxShadow: '0 6px 28px rgba(0,0,0,0.4)', transition: 'transform 0.15s, box-shadow 0.15s' }}
             onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 36px rgba(0,0,0,0.5)' }}
             onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 6px 28px rgba(0,0,0,0.4)' }}>
-            <Image src="/knop-beheer.png" alt="Beheer / Docent / Erik" fill style={{ objectFit: 'cover', objectPosition: 'center top' }} />
+            <Image src="/knop-beheer.png" alt="Beheer / Docent / Erik" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
           </div>
         </Link>
       </div>
