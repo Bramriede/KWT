@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
-import { supabase, WERELDEN, SUBCATEGORIEEN, type Groep, type Materiaal, type WereldNaam, type Leerjaar, type Ronde, type UserRole } from '@/lib/supabase'
+import { supabase, WERELDEN, SUBCATEGORIEEN, sessieActief,type Groep, type Materiaal, type WereldNaam, type Leerjaar, type Ronde, type UserRole } from '@/lib/supabase'
 import Link from 'next/link'
 
 type Tab = 'rondes' | 'groepen' | 'materialen' | 'overzicht'
@@ -63,6 +63,20 @@ export default function Admin() {
   async function verwijderGroep(id: string) {
     if (!confirm('Groep + bestellingen verwijderen?')) return
     await supabase.from('groepen').delete().eq('id', id)
+    laadAlles()
+  }
+
+  async function wisGroepen() {
+    const doel = groepen.filter(g => g.leerjaar === actiefLJ && (actieveRondeFilter === 'alle' || g.ronde_id === actieveRondeFilter))
+    if (doel.length === 0) { alert('Geen groepen om te wissen.'); return }
+    const rondeNaam = actieveRondeFilter === 'alle' ? 'alle rondes' : rondes.find(r => r.id === actieveRondeFilter)?.naam
+    if (!confirm(`${doel.length} groep(en) van ${actiefLJ} (${rondeNaam}) wissen, inclusief al hun bestellingen?\n\nDit kan niet ongedaan worden gemaakt.`)) return
+    await supabase.from('groepen').delete().in('id', doel.map(g => g.id))
+    laadAlles()
+  }
+
+  async function geefSessieVrij(id: string) {
+    await supabase.from('groepen').update({ sessie_id: null, sessie_tijd: null }).eq('id', id)
     laadAlles()
   }
 
@@ -266,6 +280,7 @@ export default function Admin() {
                 {rondesVoorLJ.map(r => (
                   <button key={r.id} onClick={() => setActieveRondeFilter(r.id)} style={{ padding: '5px 12px', borderRadius: 99, border: 'none', cursor: 'pointer', fontFamily: 'Nunito', fontWeight: 700, fontSize: 12, background: actieveRondeFilter === r.id ? 'var(--blauw)' : 'var(--lichtgrijs)', color: actieveRondeFilter === r.id ? 'white' : 'var(--subtekst)' }}>{r.naam} {r.open ? '🟢' : '🔴'}</button>
                 ))}
+                <button className="btn btn-danger btn-sm" onClick={wisGroepen} style={{ marginLeft: 'auto' }}>🗑 Groepen in deze selectie wissen</button>
               </div>
               <div style={{ display: 'grid', gap: 8 }}>
                 {groepen.filter(g => g.leerjaar === actiefLJ && (actieveRondeFilter === 'alle' || g.ronde_id === actieveRondeFilter)).map(g => {
@@ -281,6 +296,7 @@ export default function Admin() {
                         <div style={{ fontSize: 12, color: 'var(--subtekst)', display: 'flex', gap: 8, marginTop: 2, flexWrap: 'wrap' }}>
                           <span>PIN: <code style={{ fontFamily: 'Space Mono, monospace', background: 'white', padding: '1px 6px', borderRadius: 4, fontWeight: 700 }}>{g.pincode}</code></span>
                           {g.projectnaam && <span>📋 {g.projectnaam}</span>}
+                          {sessieActief(g) && <span className="badge badge-groen">🟢 Leerling ingelogd <button onClick={() => geefSessieVrij(g.id)} style={{ marginLeft: 4, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', color: 'inherit', fontSize: 11, fontWeight: 700 }}>vrijgeven</button></span>}
                         </div>
                         <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
                           <div className="budget-bar-wrap" style={{ flex: 1, height: 6 }}><div className="budget-bar" style={{ width: `${pct}%`, background: pct > 90 ? '#DC2626' : pct > 70 ? '#D97706' : '#16A34A' }} /></div>
@@ -387,6 +403,7 @@ export default function Admin() {
                 <button key={r.id} onClick={() => setActieveRondeFilter(r.id)} style={{ padding: '5px 12px', borderRadius: 99, border: 'none', cursor: 'pointer', fontFamily: 'Nunito', fontWeight: 700, fontSize: 12, background: actieveRondeFilter === r.id ? 'var(--blauw)' : 'var(--lichtgrijs)', color: actieveRondeFilter === r.id ? 'white' : 'var(--subtekst)' }}>{r.naam}</button>
               ))}
               <button className="btn btn-groen btn-sm" onClick={exporteerAllesExcel} style={{ marginLeft: 'auto' }}>⬇ Alles exporteren (Excel)</button>
+              <button className="btn btn-danger btn-sm" onClick={wisGroepen}>🗑 Groepen + bestellingen wissen</button>
             </div>
 
             {/* Per groep */}

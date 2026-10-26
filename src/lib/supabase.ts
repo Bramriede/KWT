@@ -48,6 +48,17 @@ export interface Groep {
   leerjaar: Leerjaar
   ronde_id: string
   rondes?: Ronde
+  sessie_id?: string | null
+  sessie_tijd?: string | null
+}
+
+// Eén login tegelijk per groep: een sessie verloopt als er 2 minuten geen teken van leven is
+export const SESSIE_TIMEOUT_MS = 2 * 60 * 1000
+export const SESSIE_HEARTBEAT_MS = 30 * 1000
+
+export function sessieActief(g: Pick<Groep, 'sessie_id' | 'sessie_tijd'>) {
+  if (!g.sessie_id || !g.sessie_tijd) return false
+  return Date.now() - new Date(g.sessie_tijd).getTime() < SESSIE_TIMEOUT_MS
 }
 
 // Excel export helper

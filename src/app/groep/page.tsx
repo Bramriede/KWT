@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { supabase, sessieActief, SESSIE_TIMEOUT_MS } from '@/lib/supabase'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -18,10 +18,31 @@ export default function GroepLogin() {
     const { data, error } = await supabase
       .from('groepen').select('*, rondes(*)')
       .eq('pincode', pincode.trim()).single()
+    if (error || !data) { setLaden(false); setFout('Pincode niet gevonden. Vraag je leraar om de juiste code.'); return }
+    if (!data.rondes?.open) { setLaden(false); setFout('Deze ronde is afgesloten. Vraag je docent om hulp.'); return }
+
+    // Eén login tegelijk: sessie claimen als er geen actieve sessie is
+    if (sessieActief(data)) {
+      setLaden(false)
+      setFout('Iemand van jouw groep is al ingelogd. Er mag maar één leerling per groep bestellen.')
+      return
+    }
+    const sessieId = crypto.randomUUID()
+    const grens = new Date(Date.now() - SESSIE_TIMEOUT_MS).toISOString()
+    let filter = `sessie_tijd.is.null,sessie_tijd.lt.${grens}`
+    if (data.sessie_id) filter += `,sessie_id.eq.${data.sessie_id}`
+    const { data: geclaimd, error: claimFout } = await supabase
+      .from('groepen')
+      .update({ sessie_id: sessieId, sessie_tijd: new Date().toISOString() })
+      .eq('id', data.id)
+      .or(filter)
+      .select('id')
     setLaden(false)
-    if (error || !data) { setFout('Pincode niet gevonden. Vraag je leraar om de juiste code.'); return }
-    if (!data.rondes?.open) { setFout('Deze ronde is afgesloten. Vraag je docent om hulp.'); return }
-    sessionStorage.setItem('groep', JSON.stringify(data))
+    if (!claimFout && (!geclaimd || geclaimd.length === 0)) {
+      setFout('Iemand van jouw groep is al ingelogd. Er mag maar één leerling per groep bestellen.')
+      return
+    }
+    sessionStorage.setItem('groep', JSON.stringify({ ...data, sessie_id: claimFout ? null : sessieId }))
     router.push('/bestellen')
   }
 

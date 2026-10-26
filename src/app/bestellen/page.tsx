@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase, WERELDEN, type Groep, type Materiaal } from '@/lib/supabase'
+import { supabase, WERELDEN, SESSIE_HEARTBEAT_MS, type Groep, type Materiaal } from '@/lib/supabase'
 
 export default function Bestellen() {
   const router = useRouter()
@@ -26,6 +26,33 @@ export default function Bestellen() {
     if (parsed.projectnaam) setProjectOpgeslagen(true)
     laadData(parsed.id, parsed.wereld)
   }, [router])
+
+  // Sessie levend houden; uitloggen als iemand anders de groep heeft overgenomen
+  useEffect(() => {
+    if (!groep?.sessie_id) return
+    const sessieId = groep.sessie_id
+    const tik = async () => {
+      const { data, error } = await supabase.from('groepen')
+        .update({ sessie_tijd: new Date().toISOString() })
+        .eq('id', groep.id).eq('sessie_id', sessieId).select('id')
+      if (!error && (!data || data.length === 0)) {
+        sessionStorage.removeItem('groep')
+        alert('Je bent uitgelogd: iemand anders van jouw groep is ingelogd, of de docent heeft je uitgelogd.')
+        router.push('/groep')
+      }
+    }
+    const t = setInterval(tik, SESSIE_HEARTBEAT_MS)
+    return () => clearInterval(t)
+  }, [groep?.id, groep?.sessie_id, router])
+
+  async function uitloggen() {
+    if (groep?.sessie_id) {
+      await supabase.from('groepen').update({ sessie_id: null, sessie_tijd: null })
+        .eq('id', groep.id).eq('sessie_id', groep.sessie_id)
+    }
+    sessionStorage.removeItem('groep')
+    router.push('/')
+  }
 
   const laadData = useCallback(async (groepId: string, wereld: string) => {
     setLaden(true)
@@ -139,6 +166,7 @@ export default function Bestellen() {
             🛒 {aantalItems > 0 && <span>€{totaal.toFixed(2)}</span>}
             {aantalItems > 0 && <span style={{ position: 'absolute', top: -6, right: -6, background: '#DC2626', color: 'white', borderRadius: '99px', width: 20, height: 20, fontSize: 11, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{aantalItems}</span>}
           </button>
+          <button onClick={uitloggen} style={{ background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: 10, padding: '9px 14px', cursor: 'pointer', color: 'white', fontFamily: 'Nunito', fontWeight: 800, fontSize: 13 }}>Uitloggen</button>
         </div>
       </div>
 
