@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
-import { supabase, WERELDEN, SUBCATEGORIEEN, sessieActief,type Groep, type Materiaal, type WereldNaam, type Leerjaar, type Ronde, type UserRole } from '@/lib/supabase'
+import { supabase, WERELDEN, SUBCATEGORIEEN, sessieActief, rondeKleur, type Groep, type Materiaal, type WereldNaam, type Leerjaar, type Ronde, type UserRole } from '@/lib/supabase'
 import Link from 'next/link'
 
 type Tab = 'rondes' | 'groepen' | 'materialen' | 'overzicht'
@@ -233,10 +233,10 @@ export default function Admin() {
                 return (
                   <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 18px', background: r.open ? '#F0FDF4' : 'var(--lichtgrijs)', borderRadius: 12, border: r.open ? '1.5px solid #86EFAC' : '1.5px solid var(--rand)', flexWrap: 'wrap' }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 900, fontSize: 16 }}>{r.naam}</div>
+                      <div style={{ fontWeight: 900, fontSize: 16, color: rondeKleur(r.nummer).kleur }}>{rondeKleur(r.nummer).emoji} {r.naam}</div>
                       <div style={{ fontSize: 12, color: 'var(--subtekst)', marginTop: 2 }}>{aantalGroepen} groepen · {aantalBestellingen} bestellingen</div>
                     </div>
-                    <span className={`badge ${r.open ? 'badge-groen' : 'badge-rood'}`}>{r.open ? '🟢 Open' : '🔴 Gesloten'}</span>
+                    <span className={`badge ${r.open ? 'badge-groen' : 'badge-rood'}`}>{r.open ? '🔓 Open' : '🔒 Gesloten'}</span>
                     <button
                       onClick={() => toggleRonde(r.id, r.open)}
                       className={`btn btn-sm ${r.open ? 'btn-danger' : 'btn-groen'}`}
@@ -265,7 +265,7 @@ export default function Admin() {
                 </div>
                 <div><label>Ronde</label>
                   <select value={ng.ronde_id} onChange={e => setNg({...ng, ronde_id: e.target.value})}>
-                    {rondesVoorLJ.map(r => <option key={r.id} value={r.id}>{r.naam} {r.open ? '🟢' : '🔴'}</option>)}
+                    {rondesVoorLJ.map(r => <option key={r.id} value={r.id}>{rondeKleur(r.nummer).emoji} {r.naam} {r.open ? '· open' : '· gesloten'}</option>)}
                   </select>
                 </div>
                 <div><label>Budget €</label><input type="number" step="0.50" value={ng.budget} onChange={e => setNg({...ng, budget: e.target.value})} required /></div>
@@ -281,7 +281,7 @@ export default function Admin() {
               <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap', marginBottom: 16 }}>
                 <button onClick={() => setActieveRondeFilter('alle')} style={{ padding: '5px 12px', borderRadius: 99, border: 'none', cursor: 'pointer', fontFamily: 'Nunito', fontWeight: 700, fontSize: 12, background: actieveRondeFilter === 'alle' ? 'var(--blauw)' : 'var(--lichtgrijs)', color: actieveRondeFilter === 'alle' ? 'white' : 'var(--subtekst)' }}>Alle rondes</button>
                 {rondesVoorLJ.map(r => (
-                  <button key={r.id} onClick={() => setActieveRondeFilter(r.id)} style={{ padding: '5px 12px', borderRadius: 99, border: 'none', cursor: 'pointer', fontFamily: 'Nunito', fontWeight: 700, fontSize: 12, background: actieveRondeFilter === r.id ? 'var(--blauw)' : 'var(--lichtgrijs)', color: actieveRondeFilter === r.id ? 'white' : 'var(--subtekst)' }}>{r.naam} {r.open ? '🟢' : '🔴'}</button>
+                  <button key={r.id} onClick={() => setActieveRondeFilter(r.id)} style={{ padding: '5px 12px', borderRadius: 99, border: `1.5px solid ${rondeKleur(r.nummer).kleur}`, cursor: 'pointer', fontFamily: 'Nunito', fontWeight: 700, fontSize: 12, background: actieveRondeFilter === r.id ? rondeKleur(r.nummer).kleur : rondeKleur(r.nummer).bg, color: actieveRondeFilter === r.id ? 'white' : rondeKleur(r.nummer).kleur }}>{r.naam} {r.open ? '🔓' : '🔒'}</button>
                 ))}
                 <button className="btn btn-danger btn-sm" onClick={wisGroepen} style={{ marginLeft: 'auto' }}>🗑 Groepen in deze selectie wissen</button>
               </div>
@@ -295,7 +295,7 @@ export default function Admin() {
                   return (
                     <div key={g.id} style={{ padding: '12px 14px', background: 'var(--lichtgrijs)', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                       <div style={{ flex: 1, minWidth: 160 }}>
-                        <div style={{ fontWeight: 800, fontSize: 14 }}>{w?.emoji} {g.naam} <span style={{ fontSize: 11, color: 'var(--subtekst)', fontWeight: 400 }}>· {ronde?.naam}</span></div>
+                        <div style={{ fontWeight: 800, fontSize: 14 }}>{w?.emoji} {g.naam} <span className="badge" style={{ fontSize: 11, background: rondeKleur(ronde?.nummer).bg, color: rondeKleur(ronde?.nummer).kleur, marginLeft: 4 }}>{ronde?.naam}</span></div>
                         <div style={{ fontSize: 12, color: 'var(--subtekst)', display: 'flex', gap: 8, marginTop: 2, flexWrap: 'wrap' }}>
                           <span>PIN: <code style={{ fontFamily: 'Space Mono, monospace', background: 'white', padding: '1px 6px', borderRadius: 4, fontWeight: 700 }}>{g.pincode}</code></span>
                           {g.projectnaam && <span>📋 {g.projectnaam}</span>}
@@ -403,7 +403,7 @@ export default function Admin() {
               <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--subtekst)' }}>Ronde:</span>
               <button onClick={() => setActieveRondeFilter('alle')} style={{ padding: '5px 12px', borderRadius: 99, border: 'none', cursor: 'pointer', fontFamily: 'Nunito', fontWeight: 700, fontSize: 12, background: actieveRondeFilter === 'alle' ? 'var(--blauw)' : 'var(--lichtgrijs)', color: actieveRondeFilter === 'alle' ? 'white' : 'var(--subtekst)' }}>Alle</button>
               {rondesVoorLJ.map(r => (
-                <button key={r.id} onClick={() => setActieveRondeFilter(r.id)} style={{ padding: '5px 12px', borderRadius: 99, border: 'none', cursor: 'pointer', fontFamily: 'Nunito', fontWeight: 700, fontSize: 12, background: actieveRondeFilter === r.id ? 'var(--blauw)' : 'var(--lichtgrijs)', color: actieveRondeFilter === r.id ? 'white' : 'var(--subtekst)' }}>{r.naam}</button>
+                <button key={r.id} onClick={() => setActieveRondeFilter(r.id)} style={{ padding: '5px 12px', borderRadius: 99, border: `1.5px solid ${rondeKleur(r.nummer).kleur}`, cursor: 'pointer', fontFamily: 'Nunito', fontWeight: 700, fontSize: 12, background: actieveRondeFilter === r.id ? rondeKleur(r.nummer).kleur : rondeKleur(r.nummer).bg, color: actieveRondeFilter === r.id ? 'white' : rondeKleur(r.nummer).kleur }}>{r.naam}</button>
               ))}
               <button className="btn btn-groen btn-sm" onClick={exporteerAllesExcel} style={{ marginLeft: 'auto' }}>⬇ Alles exporteren (Excel)</button>
               <button className="btn btn-danger btn-sm" onClick={wisGroepen}>🗑 Groepen + bestellingen wissen</button>
@@ -421,7 +421,7 @@ export default function Admin() {
                     <div key={g.id} style={{ marginBottom: 20, paddingLeft: 16, borderLeft: `4px solid ${w?.kleur || 'var(--blauw)'}` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8, flexWrap: 'wrap', gap: 8 }}>
                         <div style={{ fontWeight: 900, fontSize: 15 }}>
-                          {w?.emoji} {g.naam} <span style={{ fontSize: 12, color: 'var(--subtekst)', fontWeight: 400 }}>· {ronde?.naam}</span>
+                          {w?.emoji} {g.naam} <span className="badge" style={{ fontSize: 11, background: rondeKleur(ronde?.nummer).bg, color: rondeKleur(ronde?.nummer).kleur, marginLeft: 4 }}>{ronde?.naam}</span>
                           {g.projectnaam && <span style={{ fontWeight: 400, color: 'var(--subtekst)', marginLeft: 8 }}>— {g.projectnaam}</span>}
                         </div>
                         <span style={{ fontFamily: 'Space Mono, monospace', fontWeight: 900, color: totaal > g.budget ? 'var(--rood)' : 'var(--blauw)', fontSize: 14 }}>€{totaal.toFixed(2)} / €{g.budget.toFixed(2)}</span>

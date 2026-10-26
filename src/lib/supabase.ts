@@ -52,6 +52,18 @@ export interface Groep {
   sessie_tijd?: string | null
 }
 
+// Vaste kleur per rondenummer
+export const RONDE_KLEUREN: Record<number, { emoji: string; kleur: string; bg: string }> = {
+  1: { emoji: '🟦', kleur: '#2563EB', bg: '#DBEAFE' },
+  2: { emoji: '🟩', kleur: '#16A34A', bg: '#DCFCE7' },
+  3: { emoji: '🟨', kleur: '#CA8A04', bg: '#FEF9C3' },
+  4: { emoji: '🟧', kleur: '#EA580C', bg: '#FFEDD5' },
+  5: { emoji: '🟪', kleur: '#9333EA', bg: '#F3E8FF' },
+}
+export function rondeKleur(nummer?: number) {
+  return RONDE_KLEUREN[nummer ?? 0] ?? { emoji: '⬜', kleur: '#64748B', bg: '#F1F5F9' }
+}
+
 // Eén login tegelijk per groep: een sessie verloopt als er 2 minuten geen teken van leven is
 export const SESSIE_TIMEOUT_MS = 2 * 60 * 1000
 export const SESSIE_HEARTBEAT_MS = 30 * 1000
