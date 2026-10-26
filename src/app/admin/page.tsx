@@ -61,7 +61,8 @@ export default function Admin() {
   }
 
   async function verwijderGroep(id: string) {
-    if (!confirm('Groep + bestellingen verwijderen?')) return
+    const g = groepen.find(x => x.id === id)
+    if (!confirm(`Weet je het zeker?\n\nGroep "${g?.naam ?? ''}" wordt verwijderd, inclusief alle bestellingen van deze groep.\nDit kan niet ongedaan worden gemaakt.`)) return
     await supabase.from('groepen').delete().eq('id', id)
     laadAlles()
   }
@@ -70,7 +71,8 @@ export default function Admin() {
     const doel = groepen.filter(g => g.leerjaar === actiefLJ && (actieveRondeFilter === 'alle' || g.ronde_id === actieveRondeFilter))
     if (doel.length === 0) { alert('Geen groepen om te wissen.'); return }
     const rondeNaam = actieveRondeFilter === 'alle' ? 'alle rondes' : rondes.find(r => r.id === actieveRondeFilter)?.naam
-    if (!confirm(`${doel.length} groep(en) van ${actiefLJ} (${rondeNaam}) wissen, inclusief al hun bestellingen?\n\nDit kan niet ongedaan worden gemaakt.`)) return
+    const antwoord = prompt(`Weet je het zeker?\n\n${doel.length} groep(en) van ${actiefLJ} (${rondeNaam}) worden gewist, inclusief al hun bestellingen.\nDit kan niet ongedaan worden gemaakt.\n\nTyp WISSEN om te bevestigen:`)
+    if (antwoord?.trim().toUpperCase() !== 'WISSEN') return
     await supabase.from('groepen').delete().in('id', doel.map(g => g.id))
     laadAlles()
   }
@@ -99,7 +101,8 @@ export default function Admin() {
   }
 
   async function verwijderMateriaal(id: string) {
-    if (!confirm('Materiaal verwijderen?')) return
+    const m = materialen.find(x => x.id === id)
+    if (!confirm(`Weet je het zeker?\n\nMateriaal "${m?.naam ?? ''}" wordt verwijderd uit de lijst. Bestellingen met dit materiaal verdwijnen ook.\n\nTip: wil je het alleen tijdelijk verbergen? Zet het dan op inactief.`)) return
     await supabase.from('materialen').delete().eq('id', id)
     laadAlles()
   }
