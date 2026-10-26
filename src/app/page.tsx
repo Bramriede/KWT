@@ -61,7 +61,7 @@ export default function Home() {
           <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', height: 120, cursor: 'pointer', boxShadow: '0 6px 28px rgba(0,0,0,0.4)', transition: 'transform 0.15s, box-shadow 0.15s' }}
             onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 36px rgba(0,0,0,0.5)' }}
             onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 6px 28px rgba(0,0,0,0.4)' }}>
-            <Image src="/knop-beheer.png" alt="Beheer / Docent / Erik" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
+            <Image src="/knop-beheer.png" alt="Besteller / Docent" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
           </div>
         </Link>
       </div>
