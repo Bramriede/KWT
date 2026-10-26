@@ -152,6 +152,7 @@ export default function Bestellen() {
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
                 {groep.leerjaar} · {(groep as any).rondes?.naam}
                 {groep.projectnaam && ` · 📋 ${groep.projectnaam}`}
+                {groep.leerlingen && ` · 👤 ${groep.leerlingen}`}
               </div>
             </div>
           </div>

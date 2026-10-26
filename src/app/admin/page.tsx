@@ -21,7 +21,7 @@ export default function Admin() {
   const [actiefLJ, setActiefLJ] = useState<Leerjaar>('LJ1')
   const [actieveRondeFilter, setActieveRondeFilter] = useState<string>('alle')
 
-  const [ng, setNg] = useState({ naam: '', pincode: '', wereld: 'Techniek' as WereldNaam, budget: '10', leerjaar: 'LJ1' as Leerjaar, ronde_id: '' })
+  const [ng, setNg] = useState({ naam: '', leerlingen: '', pincode: '', wereld: 'Techniek' as WereldNaam, budget: '10', leerjaar: 'LJ1' as Leerjaar, ronde_id: '' })
   const [nm, setNm] = useState({ naam: '', wereld: 'Alle', subcategorie: 'Hout', eenheid: 'stuk', prijs_per_eenheid: '', min_bestelling: '1', max_bestelling: '20', besteller: 'Erik' })
 
   const laadAlles = useCallback(async () => {
@@ -30,7 +30,7 @@ export default function Admin() {
       supabase.from('rondes').select('*').order('leerjaar').order('nummer'),
       supabase.from('groepen').select('*, rondes(*)').order('aangemaakt_op', { ascending: false }),
       supabase.from('materialen').select('*').order('wereld').order('subcategorie').order('naam'),
-      supabase.from('bestellingen').select('*, groepen(naam,wereld,projectnaam,budget,leerjaar,ronde_id,rondes(naam,leerjaar,nummer)), materialen(naam,eenheid,prijs_per_eenheid,besteller,subcategorie)')
+      supabase.from('bestellingen').select('*, groepen(naam,leerlingen,wereld,projectnaam,budget,leerjaar,ronde_id,rondes(naam,leerjaar,nummer)), materialen(naam,eenheid,prijs_per_eenheid,besteller,subcategorie)')
     ])
     if (r) setRondes(r)
     if (g) setGroepen(g)
@@ -55,8 +55,8 @@ export default function Admin() {
 
   async function voegGroepToe(e: React.FormEvent) {
     e.preventDefault()
-    await supabase.from('groepen').insert({ naam: ng.naam, pincode: ng.pincode, wereld: ng.wereld, budget: parseFloat(ng.budget), leerjaar: ng.leerjaar, ronde_id: ng.ronde_id })
-    setNg(prev => ({ ...prev, naam: '', pincode: '' }))
+    await supabase.from('groepen').insert({ naam: ng.naam, leerlingen: ng.leerlingen.trim() || null, pincode: ng.pincode, wereld: ng.wereld, budget: parseFloat(ng.budget), leerjaar: ng.leerjaar, ronde_id: ng.ronde_id })
+    setNg(prev => ({ ...prev, naam: '', leerlingen: '', pincode: '' }))
     laadAlles()
   }
 
@@ -148,10 +148,10 @@ export default function Admin() {
   }
 
   function exporteerAllesExcel() {
-    const rows: any[][] = [['Groep', 'Leerjaar', 'Ronde', 'Wereld', 'Project', 'Materiaal', 'Subcategorie', 'Besteller', 'Aantal', 'Prijs/stuk', 'Totaal']]
+    const rows: any[][] = [['Groep', 'Leerlingen', 'Leerjaar', 'Ronde', 'Wereld', 'Project', 'Materiaal', 'Subcategorie', 'Besteller', 'Aantal', 'Prijs/stuk', 'Totaal']]
     gefilterdeBestellingen.forEach((b: any) => {
       rows.push([
-        b.groepen?.naam, b.groepen?.leerjaar, b.groepen?.rondes?.naam,
+        b.groepen?.naam, b.groepen?.leerlingen || '', b.groepen?.leerjaar, b.groepen?.rondes?.naam,
         b.groepen?.wereld, b.groepen?.projectnaam || '',
         b.materialen?.naam, b.materialen?.subcategorie, b.materialen?.besteller,
         b.aantal, `€${b.materialen?.prijs_per_eenheid?.toFixed(2)}`, `€${b.prijs_totaal.toFixed(2)}`
@@ -257,6 +257,7 @@ export default function Admin() {
               <h2 style={{ fontWeight: 900, fontSize: 16, marginBottom: 14, color: 'var(--blauw)' }}>➕ Nieuwe groep — {actiefLJ}</h2>
               <form onSubmit={voegGroepToe} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 10 }}>
                 <div><label>Groepsnaam</label><input value={ng.naam} onChange={e => setNg({...ng, naam: e.target.value})} placeholder="Groep Bruggen" required /></div>
+                <div style={{ gridColumn: 'span 2' }}><label>Leerlingen</label><input value={ng.leerlingen} onChange={e => setNg({...ng, leerlingen: e.target.value})} placeholder="Sam, Noor, Daan, Lisa" /></div>
                 <div><label>Pincode</label><input value={ng.pincode} onChange={e => setNg({...ng, pincode: e.target.value})} placeholder="1234" required /></div>
                 <div><label>Wereld</label>
                   <select value={ng.wereld} onChange={e => setNg({...ng, wereld: e.target.value as WereldNaam})}>
@@ -298,6 +299,7 @@ export default function Admin() {
                         <div style={{ fontWeight: 800, fontSize: 14 }}>{w?.emoji} {g.naam} <span className="badge" style={{ fontSize: 11, background: rondeKleur(ronde?.nummer).bg, color: rondeKleur(ronde?.nummer).kleur, marginLeft: 4 }}>{ronde?.naam}</span></div>
                         <div style={{ fontSize: 12, color: 'var(--subtekst)', display: 'flex', gap: 8, marginTop: 2, flexWrap: 'wrap' }}>
                           <span>PIN: <code style={{ fontFamily: 'Space Mono, monospace', background: 'white', padding: '1px 6px', borderRadius: 4, fontWeight: 700 }}>{g.pincode}</code></span>
+                          {g.leerlingen && <span>👤 {g.leerlingen}</span>}
                           {g.projectnaam && <span>📋 {g.projectnaam}</span>}
                           {sessieActief(g) && <span className="badge badge-groen">🟢 Leerling ingelogd <button onClick={() => geefSessieVrij(g.id)} style={{ marginLeft: 4, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', color: 'inherit', fontSize: 11, fontWeight: 700 }}>vrijgeven</button></span>}
                         </div>

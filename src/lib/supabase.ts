@@ -48,6 +48,7 @@ export interface Groep {
   leerjaar: Leerjaar
   ronde_id: string
   rondes?: Ronde
+  leerlingen?: string | null
   sessie_id?: string | null
   sessie_tijd?: string | null
 }
