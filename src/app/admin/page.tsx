@@ -287,8 +287,22 @@ export default function Admin() {
                 <button className="btn btn-danger btn-sm" onClick={wisGroepen} style={{ marginLeft: 'auto' }}>🗑 Groepen in deze selectie wissen</button>
               </div>
               <div style={{ display: 'grid', gap: 8 }}>
-                {groepen.filter(g => g.leerjaar === actiefLJ && (actieveRondeFilter === 'alle' || g.ronde_id === actieveRondeFilter)).map(g => {
-                  const w = WERELDEN.find(x => x.naam === g.wereld)
+                {WERELDEN.map(wv => {
+                  const lijst = groepen
+                    .filter(g => g.wereld === wv.naam && g.leerjaar === actiefLJ && (actieveRondeFilter === 'alle' || g.ronde_id === actieveRondeFilter))
+                    .sort((a, b) => (rondes.find(r => r.id === a.ronde_id)?.nummer ?? 0) - (rondes.find(r => r.id === b.ronde_id)?.nummer ?? 0) || a.naam.localeCompare(b.naam))
+                  return (
+                  <div key={wv.naam} style={{ marginBottom: 14 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: wv.bg, borderLeft: `4px solid ${wv.kleur}`, borderRadius: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: 18 }}>{wv.emoji}</span>
+                      <span style={{ fontWeight: 900, color: wv.kleur }}>{wv.naam}</span>
+                      <span style={{ fontSize: 12, color: 'var(--subtekst)', fontWeight: 700 }}>{lijst.length} {lijst.length === 1 ? 'groep' : 'groepen'}</span>
+                    </div>
+                    {lijst.length === 0
+                      ? <p style={{ fontSize: 12, color: 'var(--subtekst)', paddingLeft: 12 }}>Nog geen groepen.</p>
+                      : <div style={{ display: 'grid', gap: 8 }}>
+                {lijst.map(g => {
+                  const w = wv
                   const gb = bestellingen.filter(b => b.groep_id === g.id)
                   const tot = gb.reduce((s: number, b: any) => s + b.prijs_totaal, 0)
                   const pct = Math.min(100, (tot / g.budget) * 100)
@@ -310,6 +324,10 @@ export default function Admin() {
                       </div>
                       <button onClick={() => verwijderGroep(g.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--rood)', fontSize: 16, padding: 4 }}>🗑</button>
                     </div>
+                  )
+                })}
+                      </div>}
+                  </div>
                   )
                 })}
               </div>
@@ -416,7 +434,9 @@ export default function Admin() {
               <h2 style={{ fontWeight: 900, fontSize: 16, marginBottom: 16, color: 'var(--blauw)' }}>📋 Bestellingen per groep — {actiefLJ}</h2>
               {groepBestellingen.filter(x => x.best.length > 0).length === 0
                 ? <p style={{ color: 'var(--subtekst)', fontSize: 13 }}>Nog geen bestellingen.</p>
-                : groepBestellingen.filter(x => x.best.length > 0).map(({ groep: g, best, totaal }) => {
+                : groepBestellingen.filter(x => x.best.length > 0)
+                    .sort((a, b) => WERELDEN.findIndex(w => w.naam === a.groep.wereld) - WERELDEN.findIndex(w => w.naam === b.groep.wereld) || a.groep.naam.localeCompare(b.groep.naam))
+                    .map(({ groep: g, best, totaal }) => {
                   const w = WERELDEN.find(x => x.naam === g.wereld)
                   const ronde = rondes.find(r => r.id === g.ronde_id)
                   return (
