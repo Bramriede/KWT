@@ -55,3 +55,7 @@ label { display: block; font-weight: 800; font-size: 12px; color: var(--subtekst
 .teller-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .groen-markering { background: #F0FDF4; border-left: 4px solid #16A34A !important; }
+
+/* Wachtwoordhint: onzichtbaar tot je hem selecteert */
+.verborgen-ww { color: transparent; background: var(--lichtgrijs); border-radius: 4px; padding: 0 4px; user-select: text; }
+.verborgen-ww::selection { color: var(--tekst); background: #FDE68A; }
