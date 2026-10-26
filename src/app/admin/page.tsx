@@ -176,7 +176,7 @@ export default function Admin() {
           <div style={{ textAlign: 'center', marginBottom: 24 }}>
             <div style={{ fontSize: 40, marginBottom: 8 }}>🔑</div>
             <h1 style={{ fontSize: 22, fontWeight: 900, color: 'var(--blauw)' }}>KWT Beheer</h1>
-            <p style={{ fontSize: 13, color: 'var(--subtekst)', marginTop: 4 }}>Docent: <span className="verborgen-ww">kwt2026</span> · Besteller: <span className="verborgen-ww">erik2026</span></p>
+            <p style={{ fontSize: 13, color: 'var(--subtekst)', marginTop: 4 }}><span className="verborgen-ww">Docent: kwt2026 · Besteller: erik2026</span></p>
           </div>
           <form onSubmit={login}>
             <label>Wachtwoord</label>
