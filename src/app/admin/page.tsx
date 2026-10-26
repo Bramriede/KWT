@@ -22,7 +22,7 @@ export default function Admin() {
   const [actieveRondeFilter, setActieveRondeFilter] = useState<string>('alle')
 
   const [ng, setNg] = useState({ naam: '', leerlingen: '', pincode: '', wereld: 'Techniek' as WereldNaam, budget: '10', leerjaar: 'LJ1' as Leerjaar, ronde_id: '' })
-  const [nm, setNm] = useState({ naam: '', wereld: 'Alle', subcategorie: 'Hout', eenheid: 'stuk', prijs_per_eenheid: '', min_bestelling: '1', max_bestelling: '20', besteller: 'Erik' })
+  const [nm, setNm] = useState({ naam: '', wereld: 'Alle', subcategorie: 'Hout', eenheid: 'stuk', prijs_per_eenheid: '', min_bestelling: '1', max_bestelling: '20', besteller: 'Besteller Techniek' })
 
   const laadAlles = useCallback(async () => {
     setLaden(true)
@@ -195,7 +195,7 @@ export default function Admin() {
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
           <div>
             <h1 style={{ color: '#96D400', fontWeight: 900, fontSize: 18 }}>
-              {rol === 'erik' ? '📦 Erik — Inkoopoverzicht' : '🔑 KWT Beheer'}
+              {rol === 'erik' ? '📦 Besteller — Inkoopoverzicht' : '🔑 KWT Beheer'}
             </h1>
             <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12 }}>Yuverta Boskoop</p>
           </div>
@@ -358,7 +358,7 @@ export default function Admin() {
                 <div><label>Max</label><input type="number" value={nm.max_bestelling} onChange={e => setNm({...nm, max_bestelling: e.target.value})} /></div>
                 <div><label>Besteller</label>
                   <select value={nm.besteller} onChange={e => setNm({...nm, besteller: e.target.value})}>
-                    <option>Erik</option><option>Groene docent</option><option>Docent</option>
+                    <option>Besteller Techniek</option><option>Besteller Groen</option><option>Besteller Kunst & Cultuur</option>
                   </select>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'flex-end' }}>
@@ -372,14 +372,14 @@ export default function Admin() {
                 {materialen.map(m => {
                   const bezig = bewerkMateriaal === m.id
                   return (
-                    <div key={m.id} style={{ padding: '10px 14px', background: m.actief ? (m.besteller === 'Groene docent' ? '#F0FDF4' : 'var(--lichtgrijs)') : '#f5f0f0', borderRadius: 10, opacity: m.actief ? 1 : 0.55, borderLeft: m.besteller === 'Groene docent' ? '3px solid #16A34A' : '3px solid transparent' }}>
+                    <div key={m.id} style={{ padding: '10px 14px', background: m.actief ? (m.besteller === 'Besteller Groen' ? '#F0FDF4' : 'var(--lichtgrijs)') : '#f5f0f0', borderRadius: 10, opacity: m.actief ? 1 : 0.55, borderLeft: m.besteller === 'Besteller Groen' ? '3px solid #16A34A' : '3px solid transparent' }}>
                       {!bezig ? (
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                           <div style={{ flex: 1, minWidth: 160 }}>
                             <span style={{ fontWeight: 800, fontSize: 14 }}>{m.naam}</span>
                             <span style={{ marginLeft: 8, fontSize: 12, color: 'var(--subtekst)' }}>
                               {m.wereld === 'Alle' ? '🌐' : WERELDEN.find(w => w.naam === m.wereld)?.emoji} {m.subcategorie} · <strong style={{ fontFamily: 'Space Mono, monospace' }}>€{m.prijs_per_eenheid.toFixed(2)}</strong>/{m.eenheid} · max {m.max_bestelling}
-                              {m.besteller === 'Groene docent' && <span className="badge badge-groen" style={{ marginLeft: 6 }}>🌿 Groene docent</span>}
+                              {m.besteller === 'Besteller Groen' && <span className="badge badge-groen" style={{ marginLeft: 6 }}>🌿 Groen</span>}
                             </span>
                           </div>
                           <div style={{ display: 'flex', gap: 6 }}>
@@ -396,8 +396,8 @@ export default function Admin() {
                             <div><label>Eenheid</label><input style={inputStyle} value={bewerkWaarden.eenheid || ''} onChange={e => setBewerkWaarden({...bewerkWaarden, eenheid: e.target.value})} /></div>
                             <div><label>Max</label><input style={inputStyle} type="number" value={bewerkWaarden.max_bestelling || ''} onChange={e => setBewerkWaarden({...bewerkWaarden, max_bestelling: parseInt(e.target.value)})} /></div>
                             <div><label>Besteller</label>
-                              <select style={inputStyle} value={bewerkWaarden.besteller || 'Erik'} onChange={e => setBewerkWaarden({...bewerkWaarden, besteller: e.target.value})}>
-                                <option>Erik</option><option>Groene docent</option><option>Docent</option>
+                              <select style={inputStyle} value={bewerkWaarden.besteller || 'Besteller Techniek'} onChange={e => setBewerkWaarden({...bewerkWaarden, besteller: e.target.value})}>
+                                <option>Besteller Techniek</option><option>Besteller Groen</option><option>Besteller Kunst & Cultuur</option>
                               </select>
                             </div>
                           </div>
@@ -450,7 +450,7 @@ export default function Admin() {
                       </div>
                       {best.map((b: any) => (
                         <div key={b.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '5px 0', borderBottom: '1px solid var(--rand)' }}>
-                          <span>{b.materialen?.naam} <span style={{ color: b.materialen?.besteller === 'Groene docent' ? '#16A34A' : 'var(--subtekst)', fontSize: 11, fontWeight: 700 }}>via {b.materialen?.besteller}</span></span>
+                          <span>{b.materialen?.naam} <span style={{ color: b.materialen?.besteller === 'Besteller Groen' ? '#16A34A' : 'var(--subtekst)', fontSize: 11, fontWeight: 700 }}>via {b.materialen?.besteller}</span></span>
                           <span style={{ fontFamily: 'Space Mono, monospace', color: 'var(--subtekst)' }}>{b.aantal}× = €{b.prijs_totaal.toFixed(2)}</span>
                         </div>
                       ))}
@@ -460,12 +460,12 @@ export default function Admin() {
               }
             </div>
 
-            {/* Per besteller — Erik eerst, dan Groene docent duidelijk gemarkeerd */}
-            {['Erik', 'Groene docent', 'Docent'].map(besteller => {
+            {/* Per besteller */}
+            {['Besteller Techniek', 'Besteller Groen', 'Besteller Kunst & Cultuur'].map(besteller => {
               const items = inkoopPerBesteller[besteller]
               if (!items || items.length === 0) return null
               const totaalBesteller = items.reduce((s: number, x: any) => s + x.prijs_totaal, 0)
-              const isGroen = besteller === 'Groene docent'
+              const isGroen = besteller === 'Besteller Groen'
               return (
                 <div key={besteller} className="card" style={{ borderLeft: isGroen ? '4px solid #16A34A' : undefined }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 10 }}>
@@ -473,11 +473,10 @@ export default function Admin() {
                       <h2 style={{ fontWeight: 900, fontSize: 16, color: isGroen ? '#16A34A' : 'var(--blauw)' }}>
                         {isGroen ? '🌿' : '🛒'} Inkooplijst — {besteller}
                       </h2>
-                      {isGroen && <p style={{ fontSize: 12, color: '#16A34A', marginTop: 2 }}>⚠️ Erik geeft deze lijst door aan de groene docent</p>}
-                    </div>
+                                          </div>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                       <span style={{ fontFamily: 'Space Mono, monospace', fontWeight: 900, fontSize: 16, color: isGroen ? '#16A34A' : 'var(--blauw)' }}>€{totaalBesteller.toFixed(2)}</span>
-                      <button className={`btn btn-sm ${isGroen ? '' : 'btn-groen'}`} style={isGroen ? { background: '#DCFCE7', color: '#166534' } : {}} onClick={() => exporteerExcel(items, besteller.replace(' ', '-'))}>⬇ Excel</button>
+                      <button className={`btn btn-sm ${isGroen ? '' : 'btn-groen'}`} style={isGroen ? { background: '#DCFCE7', color: '#166534' } : {}} onClick={() => exporteerExcel(items, besteller.replace(/[^A-Za-z]+/g, '-'))}>⬇ Excel</button>
                     </div>
                   </div>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
