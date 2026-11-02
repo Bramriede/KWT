@@ -58,11 +58,15 @@ export default function Bestellen() {
     setLaden(true)
     const { data: mat } = await supabase
       .from('materialen').select('*').eq('actief', true)
-      .or(`wereld.eq.Alle,wereld.eq.${wereld}`)
       .order('subcategorie').order('naam')
     const { data: best } = await supabase
       .from('bestellingen').select('*').eq('groep_id', groepId)
-    if (mat) setMaterialen(mat)
+    if (mat) {
+      // Groen-materialen alleen voor Natuur-groepen; eigen wereld bovenaan
+      const zichtbaar = mat.filter((m: any) => wereld === 'Natuur' || (m.besteller !== 'Besteller Groen' && m.wereld !== 'Natuur'))
+      const rang = (m: any) => m.wereld === wereld ? 0 : m.wereld === 'Alle' ? 1 : 2
+      setMaterialen(zichtbaar.sort((a: any, b: any) => rang(a) - rang(b)))
+    }
     if (best) {
       const map: Record<string, number> = {}
       best.forEach((b: any) => { map[b.materiaal_id] = b.aantal })
